@@ -424,6 +424,25 @@
     margin-bottom: 6px;
     font-size: 13px;
   }
+  .qa-edit-hint {
+    font-size: 12px;
+    color: #5b8ab5;
+    font-weight: 600;
+    white-space: nowrap;
+    background: #e8f0f8;
+    border: 1px solid #c5dcf0;
+    border-radius: 6px;
+    padding: 3px 10px;
+    flex-shrink: 0;
+    margin-left: 8px;
+  }
+  .qa-question-admin {
+    cursor: pointer !important;
+    border-left: 3px solid #5b8ab5 !important;
+  }
+  .qa-question-admin:hover {
+    background: #e8f0f8 !important;
+  }
   .qa-edit-btn {
     float: right;
     background: #f0f4f8;
@@ -961,7 +980,7 @@
 📍 地址：330206 桃園市桃園區縣府路57號
 📞 電話：03-3250126
 🕐 上班時間：週一至五 08:00-12:00、13:00-17:00
-📧 tyadcc@mail.tycg.gov.tw
+📧 <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="fa8e839b9e9999ba979b9396d48e83999dd49d958cd48e8d">[email&#160;protected]</a>
 
 🏥 桃園動物保護園區（新屋收容所）
 🌐 https://taw.tycg.gov.tw/
@@ -1297,6 +1316,7 @@
       <img id="imgPreview" class="img-preview" style="display:none;" />
     </div>
     <input type="hidden" id="editIndex" value="-1" />
+    <input type="hidden" id="editContainerId" value="" />
     <div class="btn-row">
       <button class="btn-primary" onclick="saveEdit()">💾 儲存</button>
       <button class="btn-danger" id="deleteBtn" onclick="deleteEdit()" style="display:none;">🗑️ 刪除</button>
@@ -1305,7 +1325,18 @@
   </div>
 </div>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+// ============================
+// UTILS
+// ============================
+function linkify(text) {
+  // 將文字中的網址轉成可點擊的超連結
+  const urlRegex = /(https?:\/\/[^\s\n\u3000\uff00-\uffef「」【】（）、，。！？]+)/g;
+  return text.replace(urlRegex, url => {
+    return `<a href="${url}" target="_blank" rel="noopener" style="color:#1a73e8;text-decoration:underline;word-break:break-all;" onclick="event.stopPropagation()">${url}</a>`;
+  });
+}
+
 // ============================
 // DATA - QA
 // ============================
@@ -1406,18 +1437,33 @@ function renderQA(containerId, items, cityKey) {
   items.forEach((item, i) => {
     const card = document.createElement('div');
     card.className = 'qa-card';
-    const editBtn = isAdmin ? `<button class="qa-edit-btn" onclick="event.stopPropagation();openEditQA('${cityKey}','${containerId}',${i})">✏️ 編輯</button>` : '';
-    card.innerHTML = `
-      <div class="qa-question" onclick="toggleQA(this)">
-        <span class="qa-q-icon">Q</span>
-        <span style="flex:1">${item.q}</span>
-        ${editBtn}
-      </div>
-      <div class="qa-answer">
-        <div class="qa-a-label">✅ 答覆</div>
-        <div style="white-space:pre-wrap">${item.a}</div>
-      </div>
-    `;
+
+    if (isAdmin) {
+      // 後台模式：整個問題列右側顯示編輯提示，點擊問題列直接開啟編輯
+      card.innerHTML = `
+        <div class="qa-question qa-question-admin" onclick="openEditQA('${cityKey}','${containerId}',${i}, event)">
+          <span class="qa-q-icon">Q</span>
+          <span style="flex:1">${item.q}</span>
+          <span class="qa-edit-hint">✏️ 點擊編輯</span>
+        </div>
+        <div class="qa-answer">
+          <div class="qa-a-label">✅ 答覆</div>
+          <div style="white-space:pre-wrap">${linkify(item.a)}</div>
+        </div>
+      `;
+    } else {
+      // 一般模式：點擊展開/收合答案
+      card.innerHTML = `
+        <div class="qa-question" onclick="toggleQA(this)">
+          <span class="qa-q-icon">Q</span>
+          <span style="flex:1">${item.q}</span>
+        </div>
+        <div class="qa-answer">
+          <div class="qa-a-label">✅ 答覆</div>
+          <div style="white-space:pre-wrap">${linkify(item.a)}</div>
+        </div>
+      `;
+    }
     container.appendChild(card);
   });
 }
@@ -1689,22 +1735,39 @@ document.getElementById('adminOverlay').addEventListener('click', function(e) {
 // ============================
 // EDIT
 // ============================
-function openAddEdit(mode, city, section, question, answer, idx) {
+function openAddEdit(mode, city, containerId, question, answer, idx) {
   const overlay = document.getElementById('editOverlay');
   document.getElementById('editTitle').textContent = mode === 'add' ? '➕ 新增條目' : '✏️ 編輯條目';
   document.getElementById('editCity').value = city || currentCity || 'nantou';
-  document.getElementById('editSection').value = section || '';
+  document.getElementById('editSection').value = containerId || '';
   document.getElementById('editQuestion').value = question || '';
   document.getElementById('editAnswer').value = answer || '';
   document.getElementById('editIndex').value = idx !== undefined ? idx : -1;
+  document.getElementById('editContainerId').value = containerId || '';
   document.getElementById('deleteBtn').style.display = mode === 'edit' ? 'block' : 'none';
   document.getElementById('imgPreview').style.display = 'none';
   document.getElementById('imgUploadText').textContent = '📷 點擊上傳圖片';
   overlay.classList.add('open');
 }
 
-function openEditQA(cityKey, containerId, idx) {
-  openAddEdit('edit', cityKey, '常見問題', '', '', idx);
+function openEditQA(cityKey, containerId, idx, event) {
+  // 若有點擊到超連結則不觸發編輯
+  if (event && event.target.tagName === 'A') return;
+  
+  // 根據containerId找到對應的qaData來源
+  const dataMap = {
+    'qa-nantou': qaData.nantou,
+    'qa-nantou-epidem': qaData.nantouEpidem,
+    'qa-taoyuan': qaData.taoyuan,
+    'qa-changhua': qaData.changhua,
+    'qa-changhua-rabies': qaData.changhuaRabies,
+    'qa-changhua-disease': qaData.changhuaDisease,
+    'qa-changhua-stray': qaData.changhuaStray,
+  };
+  const dataArr = dataMap[containerId];
+  const item = dataArr ? dataArr[idx] : null;
+
+  openAddEdit('edit', cityKey, containerId, item ? item.q : '', item ? item.a : '', idx);
 }
 
 function closeEditOverlay() {
@@ -1713,7 +1776,7 @@ function closeEditOverlay() {
 
 function saveEdit() {
   const city = document.getElementById('editCity').value;
-  const section = document.getElementById('editSection').value;
+  const containerId = document.getElementById('editContainerId').value;
   const question = document.getElementById('editQuestion').value.trim();
   const answer = document.getElementById('editAnswer').value.trim();
   const idx = parseInt(document.getElementById('editIndex').value);
@@ -1723,13 +1786,34 @@ function saveEdit() {
     return;
   }
 
+  // 直接修改對應的qaData
+  const dataMap = {
+    'qa-nantou': qaData.nantou,
+    'qa-nantou-epidem': qaData.nantouEpidem,
+    'qa-taoyuan': qaData.taoyuan,
+    'qa-changhua': qaData.changhua,
+    'qa-changhua-rabies': qaData.changhuaRabies,
+    'qa-changhua-disease': qaData.changhuaDisease,
+    'qa-changhua-stray': qaData.changhuaStray,
+  };
+
   if (idx === -1) {
-    customEntries.push({city, section, question, answer});
+    // 新增：加到customEntries
+    customEntries.push({city, section: containerId, question, answer});
+    localStorage.setItem('customEntries', JSON.stringify(customEntries));
+  } else if (dataMap[containerId]) {
+    // 修改原始資料
+    dataMap[containerId][idx] = {q: question, a: answer};
+    // 同步儲存修改到localStorage
+    const savedEdits = JSON.parse(localStorage.getItem('savedEdits') || '{}');
+    if (!savedEdits[containerId]) savedEdits[containerId] = {};
+    savedEdits[containerId][idx] = {q: question, a: answer};
+    localStorage.setItem('savedEdits', JSON.stringify(savedEdits));
   } else {
-    customEntries[idx] = {city, section, question, answer};
+    customEntries[idx] = {city, section: containerId, question, answer};
+    localStorage.setItem('customEntries', JSON.stringify(customEntries));
   }
-  localStorage.setItem('customEntries', JSON.stringify(customEntries));
-  
+
   // Re-build search index
   searchIndex.length = 0;
   buildSearchIndex();
@@ -1740,15 +1824,36 @@ function saveEdit() {
 }
 
 function deleteEdit() {
+  const containerId = document.getElementById('editContainerId').value;
   const idx = parseInt(document.getElementById('editIndex').value);
-  if (idx >= 0 && confirm('確定要刪除這筆資料嗎？')) {
+  if (!confirm('確定要刪除這筆資料嗎？')) return;
+
+  const dataMap = {
+    'qa-nantou': qaData.nantou,
+    'qa-nantou-epidem': qaData.nantouEpidem,
+    'qa-taoyuan': qaData.taoyuan,
+    'qa-changhua': qaData.changhua,
+    'qa-changhua-rabies': qaData.changhuaRabies,
+    'qa-changhua-disease': qaData.changhuaDisease,
+    'qa-changhua-stray': qaData.changhuaStray,
+  };
+
+  if (idx >= 0 && dataMap[containerId]) {
+    dataMap[containerId].splice(idx, 1);
+    const savedEdits = JSON.parse(localStorage.getItem('savedEdits') || '{}');
+    if (savedEdits[containerId]) {
+      delete savedEdits[containerId][idx];
+      localStorage.setItem('savedEdits', JSON.stringify(savedEdits));
+    }
+  } else if (idx >= 0) {
     customEntries.splice(idx, 1);
     localStorage.setItem('customEntries', JSON.stringify(customEntries));
-    searchIndex.length = 0;
-    buildSearchIndex();
-    closeEditOverlay();
-    renderAllQA();
   }
+
+  searchIndex.length = 0;
+  buildSearchIndex();
+  closeEditOverlay();
+  renderAllQA();
 }
 
 function previewImg(input) {
@@ -1770,9 +1875,41 @@ document.getElementById('editOverlay').addEventListener('click', function(e) {
 // ============================
 // INIT
 // ============================
+
+// 載入之前儲存的編輯
+(function loadSavedEdits() {
+  const savedEdits = JSON.parse(localStorage.getItem('savedEdits') || '{}');
+  const dataMap = {
+    'qa-nantou': qaData.nantou,
+    'qa-nantou-epidem': qaData.nantouEpidem,
+    'qa-taoyuan': qaData.taoyuan,
+    'qa-changhua': qaData.changhua,
+    'qa-changhua-rabies': qaData.changhuaRabies,
+    'qa-changhua-disease': qaData.changhuaDisease,
+    'qa-changhua-stray': qaData.changhuaStray,
+  };
+  for (const [containerId, edits] of Object.entries(savedEdits)) {
+    if (dataMap[containerId]) {
+      for (const [idx, item] of Object.entries(edits)) {
+        const i = parseInt(idx);
+        if (dataMap[containerId][i]) {
+          dataMap[containerId][i] = item;
+        }
+      }
+    }
+  }
+})();
+
 renderAllQA();
 buildSearchIndex();
 switchCity('nantou');
+
+// 讓所有 info-block 內的網址變成超連結
+setTimeout(() => {
+  document.querySelectorAll('.info-block').forEach(block => {
+    block.innerHTML = linkify(block.innerHTML);
+  });
+}, 200);
 </script>
 </body>
 </html>
