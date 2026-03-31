@@ -1,0 +1,1778 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>動物保護專線知識庫</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap');
+
+  :root {
+    --nantou: #4a7c59;
+    --nantou-light: #e8f4ec;
+    --nantou-mid: #c8e6d0;
+    --taoyuan: #5b8ab5;
+    --taoyuan-light: #e8f0f8;
+    --taoyuan-mid: #c5dcf0;
+    --chiayi: #c07a2b;
+    --chiayi-light: #fdf0e0;
+    --chiayi-mid: #f5d9a8;
+    --changhua: #8b5e9e;
+    --changhua-light: #f3edf8;
+    --changhua-mid: #dcc8ec;
+    --bg: #f5f7fa;
+    --sidebar-bg: #ffffff;
+    --text: #2c3e50;
+    --text-light: #5a6a7a;
+    --border: #e0e8f0;
+    --shadow: 0 2px 12px rgba(0,0,0,0.08);
+    --radius: 10px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Noto Sans TC', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 16px;
+    line-height: 1.7;
+    min-height: 100vh;
+  }
+
+  /* ===== MARQUEE ===== */
+  .marquee-bar {
+    background: linear-gradient(90deg, #2c3e50 0%, #3d5a73 100%);
+    color: #fff;
+    padding: 8px 0;
+    overflow: hidden;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  }
+  .marquee-content {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+  .marquee-label {
+    background: #e74c3c;
+    color: #fff;
+    padding: 2px 12px;
+    border-radius: 20px;
+    font-weight: 700;
+    font-size: 13px;
+    white-space: nowrap;
+    flex-shrink: 0;
+    margin-left: 16px;
+  }
+  .marquee-text-wrapper {
+    overflow: hidden;
+    flex: 1;
+  }
+  .marquee-text {
+    display: inline-block;
+    white-space: nowrap;
+    animation: marquee 30s linear infinite;
+    font-size: 14px;
+    font-weight: 500;
+  }
+  @keyframes marquee {
+    0% { transform: translateX(100vw); }
+    100% { transform: translateX(-100%); }
+  }
+  .marquee-city {
+    display: none;
+  }
+  .marquee-city.active {
+    display: block;
+  }
+
+  /* ===== HEADER ===== */
+  .header {
+    background: linear-gradient(135deg, #1a2a3a 0%, #2c4a6a 50%, #1a3a5a 100%);
+    color: white;
+    padding: 18px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+  }
+  .header-logo {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .header-icon {
+    font-size: 36px;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+  }
+  .header-title {
+    font-size: 22px;
+    font-weight: 900;
+    letter-spacing: 1px;
+  }
+  .header-sub {
+    font-size: 13px;
+    opacity: 0.75;
+    margin-top: 2px;
+  }
+  .header-search {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex: 1;
+    max-width: 500px;
+  }
+  .search-wrap {
+    position: relative;
+    flex: 1;
+  }
+  .search-input {
+    width: 100%;
+    padding: 10px 16px 10px 44px;
+    border: none;
+    border-radius: 25px;
+    font-size: 15px;
+    font-family: 'Noto Sans TC', sans-serif;
+    background: rgba(255,255,255,0.15);
+    color: white;
+    outline: none;
+    transition: background 0.2s;
+  }
+  .search-input::placeholder { color: rgba(255,255,255,0.6); }
+  .search-input:focus { background: rgba(255,255,255,0.25); }
+  .search-icon {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 18px;
+    opacity: 0.7;
+  }
+  .search-btn {
+    background: #e74c3c;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 25px;
+    font-size: 14px;
+    font-family: 'Noto Sans TC', sans-serif;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s;
+    white-space: nowrap;
+  }
+  .search-btn:hover { background: #c0392b; }
+  .header-actions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+  .admin-btn {
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.3);
+    color: white;
+    padding: 8px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 13px;
+    font-family: 'Noto Sans TC', sans-serif;
+    font-weight: 500;
+    transition: background 0.2s;
+  }
+  .admin-btn:hover { background: rgba(255,255,255,0.25); }
+
+  /* ===== LAYOUT ===== */
+  .layout {
+    display: flex;
+    min-height: calc(100vh - 100px);
+  }
+
+  /* ===== SIDEBAR ===== */
+  .sidebar {
+    width: 220px;
+    background: white;
+    border-right: 1px solid var(--border);
+    padding: 20px 0;
+    flex-shrink: 0;
+    position: sticky;
+    top: 40px;
+    height: calc(100vh - 40px);
+    overflow-y: auto;
+  }
+  .sidebar-title {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--text-light);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 0 20px 12px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 10px;
+  }
+  .city-btn {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    padding: 14px 20px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: 'Noto Sans TC', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text);
+    transition: all 0.2s;
+    border-left: 4px solid transparent;
+    text-align: left;
+  }
+  .city-btn:hover { background: var(--bg); }
+  .city-btn.active-nantou {
+    border-left-color: var(--nantou);
+    background: var(--nantou-light);
+    color: var(--nantou);
+  }
+  .city-btn.active-taoyuan {
+    border-left-color: var(--taoyuan);
+    background: var(--taoyuan-light);
+    color: var(--taoyuan);
+  }
+  .city-btn.active-chiayi {
+    border-left-color: var(--chiayi);
+    background: var(--chiayi-light);
+    color: var(--chiayi);
+  }
+  .city-btn.active-changhua {
+    border-left-color: var(--changhua);
+    background: var(--changhua-light);
+    color: var(--changhua);
+  }
+  .city-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .dot-nantou { background: var(--nantou); }
+  .dot-taoyuan { background: var(--taoyuan); }
+  .dot-chiayi { background: var(--chiayi); }
+  .dot-changhua { background: var(--changhua); }
+
+  .sidebar-topics {
+    padding: 6px 0 6px 36px;
+    display: none;
+  }
+  .sidebar-topics.open { display: block; }
+  .topic-link {
+    display: block;
+    padding: 5px 12px;
+    font-size: 13px;
+    color: var(--text-light);
+    cursor: pointer;
+    border-radius: 6px;
+    transition: all 0.15s;
+    font-weight: 500;
+  }
+  .topic-link:hover { background: var(--bg); color: var(--text); }
+  .topic-link.active { font-weight: 700; color: var(--text); }
+
+  /* ===== MAIN ===== */
+  .main {
+    flex: 1;
+    padding: 28px 32px;
+    overflow-y: auto;
+    max-width: 1100px;
+  }
+
+  /* ===== CITY PANEL ===== */
+  .city-panel {
+    display: none;
+  }
+  .city-panel.active { display: block; }
+
+  .city-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 24px;
+    padding: 20px 24px;
+    border-radius: var(--radius);
+    color: white;
+  }
+  .city-header-nantou { background: linear-gradient(135deg, var(--nantou), #2d5a3f); }
+  .city-header-taoyuan { background: linear-gradient(135deg, var(--taoyuan), #2d5a80); }
+  .city-header-chiayi { background: linear-gradient(135deg, var(--chiayi), #8a5010); }
+  .city-header-changhua { background: linear-gradient(135deg, var(--changhua), #5a2d70); }
+  .city-header-icon { font-size: 40px; }
+  .city-header-name { font-size: 28px; font-weight: 900; }
+  .city-header-desc { font-size: 14px; opacity: 0.85; margin-top: 2px; }
+
+  /* ===== TOPIC SECTION ===== */
+  .section {
+    margin-bottom: 28px;
+    background: white;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+  }
+  .section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 16px 20px;
+    cursor: pointer;
+    user-select: none;
+    transition: background 0.15s;
+  }
+  .section-header:hover { filter: brightness(0.97); }
+  .section-header-nantou { background: var(--nantou-mid); }
+  .section-header-taoyuan { background: var(--taoyuan-mid); }
+  .section-header-chiayi { background: var(--chiayi-mid); }
+  .section-header-changhua { background: var(--changhua-mid); }
+  .section-title {
+    font-size: 18px;
+    font-weight: 900;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .section-icon { font-size: 22px; }
+  .section-toggle { font-size: 20px; color: var(--text-light); transition: transform 0.2s; }
+  .section-toggle.open { transform: rotate(180deg); }
+  .section-body {
+    padding: 20px;
+    display: none;
+  }
+  .section-body.open { display: block; }
+
+  /* ===== DATA TABLE ===== */
+  .data-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 15px;
+  }
+  .data-table th {
+    background: #f0f4f8;
+    padding: 10px 14px;
+    text-align: left;
+    font-weight: 700;
+    color: var(--text);
+    border-bottom: 2px solid var(--border);
+    font-size: 14px;
+  }
+  .data-table td {
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+    line-height: 1.6;
+  }
+  .data-table tr:last-child td { border-bottom: none; }
+  .data-table tr:hover td { background: #fafbfc; }
+
+  /* ===== QA CARD ===== */
+  .qa-list { display: flex; flex-direction: column; gap: 12px; }
+  .qa-card {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    transition: box-shadow 0.2s;
+  }
+  .qa-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.1); }
+  .qa-question {
+    padding: 14px 18px;
+    background: #f8fafc;
+    font-weight: 700;
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    transition: background 0.15s;
+  }
+  .qa-question:hover { background: #f0f4f8; }
+  .qa-q-icon {
+    background: #e74c3c;
+    color: white;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 900;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .qa-answer {
+    padding: 14px 18px;
+    background: white;
+    font-size: 15px;
+    line-height: 1.8;
+    display: none;
+    border-top: 1px solid var(--border);
+  }
+  .qa-answer.open { display: block; }
+  .qa-a-label {
+    color: #27ae60;
+    font-weight: 700;
+    margin-bottom: 6px;
+    font-size: 13px;
+  }
+  .qa-edit-btn {
+    float: right;
+    background: #f0f4f8;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 4px 10px;
+    font-size: 12px;
+    cursor: pointer;
+    color: var(--text-light);
+    font-family: 'Noto Sans TC', sans-serif;
+    transition: all 0.15s;
+    display: none;
+  }
+  .qa-edit-btn:hover { background: #e0e8f0; color: var(--text); }
+  .admin-mode .qa-edit-btn { display: inline-block; }
+
+  /* ===== INFO BLOCK ===== */
+  .info-block {
+    background: #f8fafc;
+    border-left: 4px solid var(--border);
+    padding: 12px 16px;
+    margin: 8px 0;
+    border-radius: 0 8px 8px 0;
+    font-size: 15px;
+    line-height: 1.8;
+    white-space: pre-wrap;
+    word-break: break-all;
+  }
+
+  /* ===== SEARCH RESULTS ===== */
+  .search-overlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 2000;
+    overflow-y: auto;
+    padding: 60px 20px 40px;
+  }
+  .search-overlay.open { display: block; }
+  .search-results-box {
+    background: white;
+    max-width: 800px;
+    margin: 0 auto;
+    border-radius: var(--radius);
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+  }
+  .search-results-header {
+    padding: 20px 24px;
+    background: #2c3e50;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .search-results-title { font-size: 18px; font-weight: 700; }
+  .close-search-btn {
+    background: rgba(255,255,255,0.2);
+    border: none;
+    color: white;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .search-result-item {
+    padding: 16px 24px;
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .search-result-item:hover { background: #f8fafc; }
+  .search-result-city {
+    font-size: 12px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 12px;
+    color: white;
+    display: inline-block;
+    margin-bottom: 6px;
+  }
+  .city-tag-nantou { background: var(--nantou); }
+  .city-tag-taoyuan { background: var(--taoyuan); }
+  .city-tag-chiayi { background: var(--chiayi); }
+  .city-tag-changhua { background: var(--changhua); }
+  .search-result-section { font-size: 12px; color: var(--text-light); margin-bottom: 4px; }
+  .search-result-text { font-size: 15px; font-weight: 700; color: var(--text); }
+  .search-result-preview { font-size: 13px; color: var(--text-light); margin-top: 4px; max-height: 3em; overflow: hidden; }
+  mark { background: #fff176; border-radius: 3px; padding: 0 2px; }
+  .no-results { padding: 40px; text-align: center; color: var(--text-light); font-size: 16px; }
+
+  /* ===== ADMIN PANEL ===== */
+  .admin-overlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.6);
+    z-index: 3000;
+    align-items: center;
+    justify-content: center;
+  }
+  .admin-overlay.open { display: flex; }
+  .admin-box {
+    background: white;
+    border-radius: var(--radius);
+    padding: 32px;
+    width: 420px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+  }
+  .admin-box h3 { font-size: 20px; font-weight: 900; margin-bottom: 20px; }
+  .admin-box input[type=password], .admin-box input[type=text], .admin-box textarea, .admin-box select {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 15px;
+    font-family: 'Noto Sans TC', sans-serif;
+    margin-bottom: 12px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .admin-box input:focus, .admin-box textarea:focus, .admin-box select:focus {
+    border-color: #5b8ab5;
+  }
+  .admin-box textarea { min-height: 100px; resize: vertical; }
+  .btn-row { display: flex; gap: 10px; margin-top: 4px; }
+  .btn-primary {
+    background: #2c3e50;
+    color: white;
+    border: none;
+    padding: 10px 24px;
+    border-radius: 8px;
+    font-size: 15px;
+    font-family: 'Noto Sans TC', sans-serif;
+    font-weight: 700;
+    cursor: pointer;
+    flex: 1;
+    transition: background 0.2s;
+  }
+  .btn-primary:hover { background: #1a2a3a; }
+  .btn-secondary {
+    background: #f0f4f8;
+    color: var(--text);
+    border: 1px solid var(--border);
+    padding: 10px 24px;
+    border-radius: 8px;
+    font-size: 15px;
+    font-family: 'Noto Sans TC', sans-serif;
+    font-weight: 500;
+    cursor: pointer;
+    flex: 1;
+    transition: background 0.2s;
+  }
+  .btn-secondary:hover { background: #e0e8f0; }
+  .btn-danger {
+    background: #e74c3c;
+    color: white;
+    border: none;
+    padding: 10px 24px;
+    border-radius: 8px;
+    font-size: 15px;
+    font-family: 'Noto Sans TC', sans-serif;
+    font-weight: 700;
+    cursor: pointer;
+    flex: 1;
+  }
+  .admin-status { font-size: 13px; color: #e74c3c; margin-top: 6px; min-height: 20px; }
+  .admin-badge {
+    display: none;
+    background: #e74c3c;
+    color: white;
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-weight: 700;
+  }
+  .admin-mode-active .admin-badge { display: inline-block; }
+
+  /* ===== MARQUEE ADMIN ===== */
+  .marquee-admin {
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+  }
+  .marquee-admin label { font-size: 14px; font-weight: 700; display: block; margin-bottom: 6px; }
+  .marquee-admin select { margin-bottom: 8px; }
+  .marquee-list { list-style: none; margin-top: 8px; }
+  .marquee-list li {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 0;
+    border-bottom: 1px dashed var(--border);
+    font-size: 13px;
+  }
+  .marquee-del-btn {
+    background: #fee;
+    border: 1px solid #fcc;
+    color: #e74c3c;
+    border-radius: 4px;
+    padding: 2px 8px;
+    cursor: pointer;
+    font-size: 12px;
+    flex-shrink: 0;
+  }
+
+  /* ===== EDIT MODAL ===== */
+  .edit-overlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.6);
+    z-index: 4000;
+    align-items: center;
+    justify-content: center;
+  }
+  .edit-overlay.open { display: flex; }
+  .edit-box {
+    background: white;
+    border-radius: var(--radius);
+    padding: 32px;
+    width: 560px;
+    max-width: 95vw;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+  .edit-box h3 { font-size: 18px; font-weight: 900; margin-bottom: 20px; }
+  .edit-box label { font-size: 14px; font-weight: 700; display: block; margin-bottom: 4px; }
+  .edit-box input[type=text], .edit-box textarea, .edit-box select {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 15px;
+    font-family: 'Noto Sans TC', sans-serif;
+    margin-bottom: 16px;
+    outline: none;
+  }
+  .edit-box textarea { min-height: 120px; resize: vertical; }
+  .img-upload-area {
+    border: 2px dashed var(--border);
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+    cursor: pointer;
+    margin-bottom: 16px;
+    transition: border-color 0.2s;
+  }
+  .img-upload-area:hover { border-color: #5b8ab5; }
+  .img-upload-area input { display: none; }
+  .img-preview { max-width: 100%; border-radius: 6px; margin-top: 10px; }
+  .add-btn-float {
+    display: none;
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    background: #2c3e50;
+    color: white;
+    border: none;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    font-size: 28px;
+    cursor: pointer;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    z-index: 100;
+    transition: transform 0.2s;
+  }
+  .add-btn-float:hover { transform: scale(1.1); }
+  .admin-mode .add-btn-float { display: flex; align-items: center; justify-content: center; }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 768px) {
+    .header { flex-wrap: wrap; padding: 14px 16px; gap: 12px; }
+    .header-search { order: 3; max-width: 100%; width: 100%; }
+    .sidebar { width: 180px; }
+    .main { padding: 16px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- MARQUEE -->
+<div class="marquee-bar">
+  <div class="marquee-content">
+    <span class="marquee-label">📢 公告</span>
+    <div class="marquee-text-wrapper">
+      <div id="marqueeText" class="marquee-text">歡迎使用動物保護專線知識庫｜請確認事發地點縣市後再查詢相關資訊｜如有緊急救援需求請撥打1959動物保護專線</div>
+    </div>
+  </div>
+</div>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-logo">
+    <div class="header-icon">🐾</div>
+    <div>
+      <div class="header-title">動物保護專線知識庫</div>
+      <div class="header-sub">內部同仁查詢系統 · 四縣市整合版</div>
+    </div>
+  </div>
+  <div class="header-search">
+    <div class="search-wrap">
+      <span class="search-icon">🔍</span>
+      <input type="text" class="search-input" id="globalSearch" placeholder="跨縣市關鍵字搜尋..." />
+    </div>
+    <button class="search-btn" onclick="doSearch()">搜尋</button>
+  </div>
+  <div class="header-actions">
+    <span class="admin-badge" id="adminBadge">後台模式</span>
+    <button class="admin-btn" onclick="openAdmin()">⚙️ 後台設定</button>
+  </div>
+</div>
+
+<!-- SEARCH OVERLAY -->
+<div class="search-overlay" id="searchOverlay">
+  <div class="search-results-box">
+    <div class="search-results-header">
+      <div class="search-results-title" id="searchResultsTitle">搜尋結果</div>
+      <button class="close-search-btn" onclick="closeSearch()">✕</button>
+    </div>
+    <div id="searchResultsList"></div>
+  </div>
+</div>
+
+<!-- LAYOUT -->
+<div class="layout">
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="sidebar-title">縣市選單</div>
+
+    <button class="city-btn" id="btn-nantou" onclick="switchCity('nantou')">
+      <span class="city-dot dot-nantou"></span> 南投縣
+    </button>
+    <div class="sidebar-topics" id="topics-nantou">
+      <a class="topic-link" onclick="scrollToSection('nantou','寵登系統')">寵登系統</a>
+      <a class="topic-link" onclick="scrollToSection('nantou','服務時間')">服務時間</a>
+      <a class="topic-link" onclick="scrollToSection('nantou','清潔隊電話')">清潔隊電話</a>
+      <a class="topic-link" onclick="scrollToSection('nantou','常見問題')">常見問題</a>
+      <a class="topic-link" onclick="scrollToSection('nantou','防疫問題')">動物防疫</a>
+      <a class="topic-link" onclick="scrollToSection('nantou','業務範圍')">業務範圍</a>
+    </div>
+
+    <button class="city-btn" id="btn-taoyuan" onclick="switchCity('taoyuan')">
+      <span class="city-dot dot-taoyuan"></span> 桃園市
+    </button>
+    <div class="sidebar-topics" id="topics-taoyuan">
+      <a class="topic-link" onclick="scrollToSection('taoyuan','寵登系統')">寵登系統</a>
+      <a class="topic-link" onclick="scrollToSection('taoyuan','聯絡資訊')">聯絡資訊</a>
+      <a class="topic-link" onclick="scrollToSection('taoyuan','常見問題')">常見問題</a>
+      <a class="topic-link" onclick="scrollToSection('taoyuan','單位執掌')">單位執掌</a>
+    </div>
+
+    <button class="city-btn" id="btn-chiayi" onclick="switchCity('chiayi')">
+      <span class="city-dot dot-chiayi"></span> 嘉義市
+    </button>
+    <div class="sidebar-topics" id="topics-chiayi">
+      <a class="topic-link" onclick="scrollToSection('chiayi','寵登系統')">寵登系統</a>
+      <a class="topic-link" onclick="scrollToSection('chiayi','救援聯繫')">救援聯繫</a>
+      <a class="topic-link" onclick="scrollToSection('chiayi','消防隊')">消防隊資訊</a>
+      <a class="topic-link" onclick="scrollToSection('chiayi','動保園區')">動保園區</a>
+    </div>
+
+    <button class="city-btn" id="btn-changhua" onclick="switchCity('changhua')">
+      <span class="city-dot dot-changhua"></span> 彰化縣
+    </button>
+    <div class="sidebar-topics" id="topics-changhua">
+      <a class="topic-link" onclick="scrollToSection('changhua','寵登')">寵登系統</a>
+      <a class="topic-link" onclick="scrollToSection('changhua','清潔隊')">清潔隊資訊</a>
+      <a class="topic-link" onclick="scrollToSection('changhua','常見問題')">常見問題</a>
+      <a class="topic-link" onclick="scrollToSection('changhua','狂犬病')">狂犬病</a>
+      <a class="topic-link" onclick="scrollToSection('changhua','野生動物')">野生動物</a>
+      <a class="topic-link" onclick="scrollToSection('changhua','禽流感')">禽流感</a>
+    </div>
+  </div>
+
+  <!-- MAIN CONTENT -->
+  <div class="main">
+
+    <!-- 南投 -->
+    <div class="city-panel" id="panel-nantou">
+      <div class="city-header city-header-nantou">
+        <div class="city-header-icon">🌲</div>
+        <div>
+          <div class="city-header-name">南投縣</div>
+          <div class="city-header-desc">南投縣1959動物保護專線 · 全年無休24小時受理</div>
+        </div>
+      </div>
+
+      <div class="section" id="sec-nantou-寵登系統">
+        <div class="section-header section-header-nantou" onclick="toggleSection(this)">
+          <div class="section-title"><span class="section-icon">🔐</span>寵物登記系統（寵登）</div>
+          <span class="section-toggle open">▼</span>
+        </div>
+        <div class="section-body open">
+          <div class="info-block">🌐 網址：https://www.pet.gov.tw/
+帳號：H01011
+密碼：19591959
+⚠️ 寵登系統：不可結案！
+📋 每筆通話皆獨立入案
+通報群組：南投1959專線委外群組(外部)→諮詢 / 南投1959緊急救援群組→派勤
+請追蹤留意群組通報後，是否有回應，避免案件通報錯誤群組或無人接收資訊延誤救援需求！</div>
+          <div style="background:#fff8e1; border-left:4px solid #f39c12; padding:12px 16px; border-radius:0 8px 8px 0; margin-top:12px; font-size:15px; line-height:1.8;">
+            <strong>⚠️ 注意事項：</strong><br>
+            1. 案件登錄系統已正式上線，請勿再使用測試版寫入以免資料遺失！<br>
+            2. 即日起如有接線紀錄，請於話務服務紀錄表EXCEL檔填寫及上網登錄<br>
+            3. 禁止說明「有立即生命危險為主才能前往救援」，南投民眾有需要，適當說明後可派人員去看看<br>
+            4. 遊蕩無主健康犬貓，野外有基本生存能力，如民眾堅持也請勿婉拒，可引導上班時間洽防疫所<br>
+            5. 南投救援資源寬裕，勿擔心過度派勤
+          </div>
+        </div>
+      </div>
+
+      <div class="section" id="sec-nantou-服務時間">
+        <div class="section-header section-header-nantou" onclick="toggleSection(this)">
+          <div class="section-title"><span class="section-icon">🕐</span>委外服務時間</div>
+          <span class="section-toggle open">▼</span>
+        </div>
+        <div class="section-body open">
+          <div class="info-block">委外服務時間：平日 17:00-08:00，休假日 24H</div>
+        </div>
+      </div>
+
+      <div class="section" id="sec-nantou-清潔隊電話">
+        <div class="section-header section-header-nantou" onclick="toggleSection(this)">
+          <div class="section-title"><span class="section-icon">🚛</span>南投各鄉鎮清潔隊電話</div>
+          <span class="section-toggle open">▼</span>
+        </div>
+        <div class="section-body open">
+          <table class="data-table">
+            <thead><tr><th>地區</th><th>聯絡電話</th><th>上班時間</th><th>備註</th></tr></thead>
+            <tbody>
+              <tr><td>南投市</td><td>049-2233374</td><td>9:00~5:00</td><td>下班時間也可通報，有人力前往處理</td></tr>
+              <tr><td>草屯鎮</td><td>049-2567907</td><td>8:00~5:00</td><td>週三、六休息不受理，午休12:00~1:30</td></tr>
+              <tr><td>埔里鎮</td><td>049-2910242 #9</td><td>8:00~5:00</td><td>夜間假日不受理</td></tr>
+              <tr><td>竹山鎮</td><td>049-2657403</td><td>8:00~5:00</td><td>夜間假日不受理</td></tr>
+              <tr><td>名間鄉</td><td>049-2732452</td><td>8:00~5:00</td><td>夜間假日不受理</td></tr>
+              <tr><td>鹿谷鄉</td><td>049-2755720 #281 #282 #283</td><td>9:00~5:00</td><td>夜間假日不受理</td></tr>
+              <tr><td>魚池鄉</td><td>049-2895371 #47</td><td>9:00~5:00</td><td>夜間假日不受理</td></tr>
+              <tr><td>國姓鄉</td><td>049-2721002 #162 #164</td><td>9:00~5:00</td><td>週日不受理</td></tr>
+              <tr><td>集集鎮</td><td>049-2781607</td><td>9:00~5:00</td><td>平日致電若有人回電可處理，假日不受理</td></tr>
+              <tr><td>水里鄉</td><td>049-2771640</td><td>9:00~5:00</td><td>夜間假日不受理</td></tr>
+              <tr><td>中寮鄉</td><td>049-2693500</td><td>9:00~5:00</td><td>夜間假日不受理</td></tr>
+              <tr><td>仁愛鄉</td><td>049-2801152</td><td>9:00~5:00</td><td>夜間假日不受理</td></tr>
+              <tr><td>信義鄉</td><td>049-2791860</td><td>9:00~5:00</td><td>夜間無執勤，假日有</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="section" id="sec-nantou-常見問題">
+        <div class="section-header section-header-nantou" onclick="toggleSection(this)">
+          <div class="section-title"><span class="section-icon">❓</span>1959 常見問題</div>
+          <span class="section-toggle open">▼</span>
+        </div>
+        <div class="section-body open">
+          <div class="qa-list" id="qa-nantou"></div>
+        </div>
+      </div>
+
+      <div class="section" id="sec-nantou-防疫問題">
+        <div class="section-header section-header-nantou" onclick="toggleSection(this)">
+          <div class="section-title"><span class="section-icon">🦠</span>動物防疫檢疫問題</div>
+          <span class="section-toggle">▼</span>
+        </div>
+        <div class="section-body">
+          <div class="qa-list" id="qa-nantou-epidem"></div>
+        </div>
+      </div>
+
+      <div class="section" id="sec-nantou-業務範圍">
+        <div class="section-header section-header-nantou" onclick="toggleSection(this)">
+          <div class="section-title"><span class="section-icon">📋</span>服務說明 &amp; 業務範圍</div>
+          <span class="section-toggle">▼</span>
+        </div>
+        <div class="section-body">
+          <div id="nantou-service-info"></div>
+        </div>
+      </div>
+
+      <div class="section" id="sec-nantou-海蟾蜍">
+        <div class="section-header section-header-nantou" onclick="toggleSection(this)">
+          <div class="section-title"><span class="section-icon">🐸</span>海蟾蜍防治資訊</div>
+          <span class="section-toggle">▼</span>
+        </div>
+        <div class="section-body">
+          <div id="nantou-toad-info"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 桃園 -->
+    <div class="city-panel" id="panel-taoyuan">
+      <div class="city-header city-header-taoyuan">
+        <div class="city-header-icon">🌸</div>
+        <div>
+          <div class="city-header-name">桃園市</div>
+          <div class="city-header-desc">桃園1959動物保護專線 · 話務服務知識庫</div>
+        </div>
+      </div>
+
+      <div class="section" id="sec-taoyuan-寵登系統">
+        <div class="section-header section-header-taoyuan" onclick="toggleSection(this)">
+          <div class="section-title"><span class="section-icon">🔐</span>寵物登記系統（寵登）</div>
+          <span class="section-toggle open">▼</span>
+        </div>
+        <div class="section-body open">
+          <div class="info-block">🌐 網址：https://www.pet.gov.tw/Index.aspx?s=999
+帳號：C01185
+密碼：C01185
+⚠️ 寵登系統：不可結案！
+委外服務：週一至週五 17:00-隔日08:00，週六日、例假日、國定假日、颱風、春節 24H</div>
+          <div style="background:#fff8e1; border-left:4px solid #5b8ab5; padding:12px 16px; border-radius:0 8px 8px 0; margin-top:12px; font-size:15px; line-height:1.8;">
+            <strong>📌 注意：</strong>上班日09:00前由客服中心提供報表並依後送內容/寵登系統錄案就好
+          </div>
+        </div>
+      </div>
+
+      <div class="section" id="sec-taoyuan-聯絡資訊">
+        <div class="section-header section-header-taoyuan" onclick="toggleSection(this)">
+          <div class="section-title"><span class="section-icon">📞</span>動保聯絡資訊</div>
+          <span class="section-toggle open">▼</span>
+        </div>
+        <div class="section-body open">
+          <div class="info-block">話務群組：2054 / 外撥群組：2055 / 外撥路由：92055
+
+🏢 桃園動物保護處
+🌐 https://animal.tycg.gov.tw/
+📍 地址：330206 桃園市桃園區縣府路57號
+📞 電話：03-3250126
+🕐 上班時間：週一至五 08:00-12:00、13:00-17:00
+📧 tyadcc@mail.tycg.gov.tw
+
+🏥 桃園動物保護園區（新屋收容所）
+🌐 https://taw.tycg.gov.tw/
+
+⚡ 委外廠商：佶鼎超媒體有限公司
+📞 話務窗口：0972588688
+📞 備援電話：0937802020（負責人賴彥文先生）
+📞 備用(2)：0966652765</div>
+        </div>
+      </div>
+
+      <div class="section" id="sec-taoyuan-常見問題">
+        <div class="section-header section-header-taoyuan" onclick="toggleSection(this)">
+          <div class="section-title"><span class="section-icon">❓</span>常見問題</div>
+          <span class="section-toggle open">▼</span>
+        </div>
+        <div class="section-body open">
+          <div class="qa-list" id="qa-taoyuan"></div>
+        </div>
+      </div>
+
+      <div class="section" id="sec-taoyuan-單位執掌">
+        <div class="section-header section-header-taoyuan" onclick="toggleSection(this)">
+          <div class="section-title"><span class="section-icon">🏛️</span>各單位執掌</div>
+          <span class="section-toggle">▼</span>
+        </div>
+        <div class="section-body">
+          <table class="data-table">
+            <thead><tr><th>單位</th><th>業務範圍</th></tr></thead>
+            <tbody>
+              <tr><td><strong>動物保護課</strong></td><td>動物保護業務管理、犬貓狂犬病防疫及進口追蹤檢疫、實驗動物業務管理、犬貓絕育業務管理、特定寵物（犬）業之業務管理、飼物（犬）登記業務管理等事項</td></tr>
+              <tr><td><strong>動物管制課</strong></td><td>流浪犬貓管制、急難救助及收容處置、犬貓屍體焚化服務、公立動物收容所管理</td></tr>
+              <tr><td><strong>動物保護教育園區管理課</strong></td><td>職掌動物保護教育園區之犬貓收容、認領、認養、絕育、救傷醫療管理、生命教育推展等事項</td></tr>
+              <tr><td><strong>動物防疫課</strong></td><td>豬隻傳染病防治輔導、衛生教育保健及疫情調查處置、動物用藥品管理、化製原料運輸車管理、獸醫師（佐）及獸醫診療機構管理</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- 嘉義 -->
+    <div class="city-panel" id="panel-chiayi">
+      <div class="city-header city-header-chiayi">
+        <div class="city-header-icon">🌻</div>
+        <div>
+          <div class="city-header-name">嘉義市</div>
+          <div class="city-header-desc">嘉義市1959動物保護專線 · 全年24H受理</div>
+        </div>
+      </div>
+
+      <div class="section" id="sec-chiayi-寵登系統">
+        <div class="section-header section-header-chiayi" onclick="toggleSection(this)">
+          <div class="section-title"><span class="section-icon">🔐</span>寵物登記系統（寵登）</div>
+          <span class="section-toggle open">▼</span>
+        </div>
+        <div class="section-body open">
+          <div class="info-block">🌐 網址：https://www.pet.gov.tw/Index.aspx?s=999
+帳號：T02033
+密碼：chainsea@1234
+✅ 寵登系統：要結案！
+委外服務時間：全年 24H</div>
+          <div style="background:#fff8e1; border-left:4px solid #c07a2b; padding:12px 16px; border-radius:0 8px 8px 0; margin-top:12px; font-size:15px; line-height:1.8;">
+            <strong>⚠️ 重要提示：</strong>嘉義市動保僅負責嘉義市業務，請務必確認事發地點！<br>
+            有區域劃分問題，無法跨區處理。
+          </div>
+        </div>
+      </div>
+
+      <div class="section" id="sec-chiayi-救援聯繫">
+        <div class="section-header section-header-chiayi" onclick="toggleSection(this)">
+          <div class="section-title"><span class="section-icon">🚑</span>救援聯繫方式</div>
+          <span class="section-toggle open">▼</span>
+        </div>
+        <div class="section-body open">
+          <div class="info-block">📋 救援案件 (08:00-17:30)
+→ 後送通報群組（動物保護教育園區）
+→ 電話：05-2168661（除國定假日外，皆會接聽）
+
+📋 救援案件 (17:30-08:00)
+→ 洪秀鈴 0976442282
+→ 洪嘉成 0926995451
+（由客服打派案）
+
+===================================
+後送案件，全天都要通報群組知悉，以利人員上班時段即時處理。
+下班時段：實務上仍以救傷/緊急為主</div>
+          <div style="background:#fef9f0; border-left:4px solid #c07a2b; padding:12px 16px; border-radius:0 8px 8px 0; margin-top:12px; font-size:15px; line-height:1.8;">
+            <strong>嘉義縣（跨區）聯繫：</strong><br>
+            嘉義縣家畜疾病防治所<br>
+            📍 太保市太保一路1號<br>
+            📞 05-362-0025（非假日 08:00-17:00，紅字休）
+          </div>
+        </div>
+      </div>
+
+      <div class="section" id="sec-chiayi-消防隊">
+        <div class="section-header section-header-chiayi" onclick="toggleSection(this)">
+          <div class="section-title"><span class="section-icon">🔥</span>嘉義市消防隊資訊</div>
+          <span class="section-toggle">▼</span>
+        </div>
+        <div class="section-body">
+          <div style="background:#fff3cd; border-left:4px solid #f39c12; padding:10px 16px; border-radius:0 8px 8px 0; margin-bottom:12px; font-size:14px; font-weight:700;">
+            ⚠️ 救援不包含捕蜂捉蛇，需聯繫消防局處理
+          </div>
+          <table class="data-table">
+            <thead><tr><th>單位</th><th>地址</th><th>電話</th></tr></thead>
+            <tbody>
+              <tr><td>第一消防大隊 第一消防分隊</td><td>西區文化路287號</td><td>05-222-6658</td></tr>
+              <tr><td>第一大隊 湖內分隊</td><td>西區南京路59號</td><td>05-283-2051</td></tr>
+              <tr><td>第一大隊 中央分隊</td><td>東區垂楊路327號</td><td>05-276-4119</td></tr>
+              <tr><td>第二消防大隊 第二消防分隊</td><td>東區吳鳳南路120號</td><td>05-222-6659</td></tr>
+              <tr><td>第二大隊 嘉北分隊</td><td>東區玉山路27號</td><td>05-238-8119</td></tr>
+              <tr><td>第二大隊 嘉南分隊</td><td>西區新民路777號</td><td>05-281-5119</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="section" id="sec-chiayi-動保園區">
+        <div class="section-header section-header-chiayi" onclick="toggleSection(this)">
+          <div class="section-title"><span class="section-icon">🏠</span>動物保護教育園區</div>
+          <span class="section-toggle open">▼</span>
+        </div>
+        <div class="section-body open">
+          <div class="info-block">📞 動物保護教育園區電話：05-2168661
+🕐 服務時間：08:00-17:30 周一至周日（除國定假日皆會接聽）
+🔴 休園：星期日、一，不對外開放
+
+📋 動保園區收容：
+1. 受傷犬貓
+2. 飼主棄養（週二~週六 09:00-11:30，14:00-16:30，需自行至園區辦理手續）
+3. 其餘皆為TNVR（六個月以上的動物絕育後回置）
+
+⚠️ 路殺大體處理：
+嘉義市環保局 05-225-1775（24H）
+或清潔隊 05-227-9075（會評估有無影響交通）
+※白鼻心及鼬獾跟狂犬病相關，後續送檢除外→要通知值班單位</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 彰化 -->
+    <div class="city-panel" id="panel-changhua">
+      <div class="city-header city-header-changhua">
+        <div class="city-header-icon">🌺</div>
+        <div>
+          <div class="city-header-name">彰化縣</div>
+          <div class="city-header-desc">彰化縣動物防疫所 · 動物保護業務知識庫</div>
+        </div>
+      </div>
+
+      <div class="section" id="sec-changhua-寵登">
+        <div class="section-header section-header-changhua" onclick="toggleSection(this)">
+          <div class="section-title"><span class="section-icon">🔐</span>委外服務時間 &amp; 派勤</div>
+          <span class="section-toggle open">▼</span>
+        </div>
+        <div class="section-body open">
+          <div class="info-block">委外服務時間：平日 17:00-08:30，休假日 24H
+（連續假期前一日17:00起為24H）
+
+⚠️ 緊急救援只針對有立即生命危險之動物（如骨折、癱瘓、大量出血、車禍、外力造成等）
+✗ 不適用：單純虛弱、眼睛分泌物、皮膚病等，請民眾自行PO網尋求協助
+✗ 如民眾通報受困案件只聽到聲音但無法確認犬貓狀態，無明確資訊無法派員
+
+請參照值班表：https://reurl.cc/Vz0kXN
+
+派勤人員（非上班日）：
+陳淑珍 0971-112202
+張生錦 0972-381407
+許鈺雲 0911-111871
+⚠️ 救援人員資訊請勿洩漏</div>
+        </div>
+      </div>
+
+      <div class="section" id="sec-changhua-清潔隊">
+        <div class="section-header section-header-changhua" onclick="toggleSection(this)">
+          <div class="section-title"><span class="section-icon">🚛</span>彰化縣各鄉鎮清潔隊電話</div>
+          <span class="section-toggle open">▼</span>
+        </div>
+        <div class="section-body open">
+          <table class="data-table">
+            <thead><tr><th>鄉鎮市</th><th>電話</th></tr></thead>
+            <tbody>
+              <tr><td>彰化市</td><td>04-7122288</td></tr>
+              <tr><td>芬園鄉</td><td>049-2527542</td></tr>
+              <tr><td>花壇鄉</td><td>04-7865921 #121</td></tr>
+              <tr><td>秀水鄉</td><td>04-7681038</td></tr>
+              <tr><td>鹿港鎮</td><td>04-7772006 #2113</td></tr>
+              <tr><td>福興鄉</td><td>04-7707030</td></tr>
+              <tr><td>線西鄉</td><td>04-7584012 #136</td></tr>
+              <tr><td>和美鄉</td><td>04-7560613</td></tr>
+              <tr><td>伸港鄉</td><td>047-7980027</td></tr>
+              <tr><td>員林鎮</td><td>04-8320014</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="section" id="sec-changhua-常見問題">
+        <div class="section-header section-header-changhua" onclick="toggleSection(this)">
+          <div class="section-title"><span class="section-icon">❓</span>常見問題 QA</div>
+          <span class="section-toggle open">▼</span>
+        </div>
+        <div class="section-body open">
+          <div class="qa-list" id="qa-changhua"></div>
+        </div>
+      </div>
+
+      <div class="section" id="sec-changhua-狂犬病">
+        <div class="section-header section-header-changhua" onclick="toggleSection(this)">
+          <div class="section-title"><span class="section-icon">💉</span>狂犬病相關</div>
+          <span class="section-toggle">▼</span>
+        </div>
+        <div class="section-body">
+          <div class="qa-list" id="qa-changhua-rabies"></div>
+        </div>
+      </div>
+
+      <div class="section" id="sec-changhua-野生動物">
+        <div class="section-header section-header-changhua" onclick="toggleSection(this)">
+          <div class="section-title"><span class="section-icon">🦉</span>野生動物救援</div>
+          <span class="section-toggle">▼</span>
+        </div>
+        <div class="section-body">
+          <div id="changhua-wildlife-info"></div>
+        </div>
+      </div>
+
+      <div class="section" id="sec-changhua-禽流感">
+        <div class="section-header section-header-changhua" onclick="toggleSection(this)">
+          <div class="section-title"><span class="section-icon">🐓</span>禽流感 / 非洲豬瘟 / 疫病防治</div>
+          <span class="section-toggle">▼</span>
+        </div>
+        <div class="section-body">
+          <div class="qa-list" id="qa-changhua-disease"></div>
+        </div>
+      </div>
+
+      <div class="section" id="sec-changhua-流浪犬">
+        <div class="section-header section-header-changhua" onclick="toggleSection(this)">
+          <div class="section-title"><span class="section-icon">🐕</span>流浪犬案件處理</div>
+          <span class="section-toggle">▼</span>
+        </div>
+        <div class="section-body">
+          <div class="qa-list" id="qa-changhua-stray"></div>
+        </div>
+      </div>
+
+      <div class="section" id="sec-changhua-獸醫">
+        <div class="section-header section-header-changhua" onclick="toggleSection(this)">
+          <div class="section-title"><span class="section-icon">🏥</span>115年度配合救援獸醫診療機構</div>
+          <span class="section-toggle">▼</span>
+        </div>
+        <div class="section-body">
+          <div style="background:#fee; border-left:4px solid #e74c3c; padding:10px 16px; border-radius:0 8px 8px 0; margin-bottom:12px; font-size:14px; font-weight:700;">
+            ⚠️ 救援人員資訊請勿洩漏給民眾
+          </div>
+          <table class="data-table">
+            <thead><tr><th>鄉鎮</th><th>醫院名稱</th><th>負責人</th><th>地址</th><th>電話</th><th>營業時間</th></tr></thead>
+            <tbody>
+              <tr><td>彰化市</td><td>築愛動物醫院</td><td>呂柏霆</td><td>彰化市民生南路51號</td><td>04-7239939</td><td>早上9:00-晚上9:00</td></tr>
+              <tr><td>彰化市</td><td>慧光犬貓動物醫院</td><td>吳倍宜</td><td>彰化市埔西街259號</td><td>04-7633320</td><td>早上9:00~晚上7:00，週日休</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end .main -->
+</div><!-- end .layout -->
+
+<!-- 新增按鈕（後台模式） -->
+<button class="add-btn-float" id="addBtn" onclick="openAddEdit('add')" title="新增條目">+</button>
+
+<!-- 後台登入 Overlay -->
+<div class="admin-overlay" id="adminOverlay">
+  <div class="admin-box" id="adminBox">
+    <h3>⚙️ 後台設定</h3>
+    <div id="adminLoginSection">
+      <input type="password" id="adminPassword" placeholder="請輸入管理員密碼" onkeydown="if(event.key==='Enter')checkAdmin()" />
+      <div class="btn-row">
+        <button class="btn-primary" onclick="checkAdmin()">登入</button>
+        <button class="btn-secondary" onclick="closeAdmin()">取消</button>
+      </div>
+      <div class="admin-status" id="adminStatus"></div>
+    </div>
+    <div id="adminMainSection" style="display:none">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+        <strong style="font-size:16px;">✅ 已登入後台</strong>
+        <button class="btn-secondary" style="flex:0;padding:6px 14px;" onclick="logoutAdmin()">登出</button>
+      </div>
+      <div class="marquee-admin">
+        <label>📢 跑馬燈設定</label>
+        <select id="marqueeCity">
+          <option value="all">全域（所有縣市）</option>
+          <option value="nantou">南投縣</option>
+          <option value="taoyuan">桃園市</option>
+          <option value="chiayi">嘉義市</option>
+          <option value="changhua">彰化縣</option>
+        </select>
+        <input type="text" id="marqueeInput" placeholder="輸入跑馬燈文字..." style="margin-bottom:8px;" />
+        <button class="btn-primary" onclick="addMarquee()">新增跑馬燈</button>
+        <ul class="marquee-list" id="marqueeList"></ul>
+      </div>
+      <div style="margin-top:16px;">
+        <button class="btn-secondary" onclick="closeAdmin()" style="width:100%;">關閉</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 編輯 Overlay -->
+<div class="edit-overlay" id="editOverlay">
+  <div class="edit-box">
+    <h3 id="editTitle">✏️ 編輯條目</h3>
+    <label>縣市</label>
+    <select id="editCity">
+      <option value="nantou">南投縣</option>
+      <option value="taoyuan">桃園市</option>
+      <option value="chiayi">嘉義市</option>
+      <option value="changhua">彰化縣</option>
+    </select>
+    <label>主題分類</label>
+    <input type="text" id="editSection" placeholder="例：常見問題、清潔隊電話..." />
+    <label>問題 / 標題</label>
+    <input type="text" id="editQuestion" placeholder="輸入問題或標題..." />
+    <label>答案 / 內容</label>
+    <textarea id="editAnswer" placeholder="輸入詳細內容..."></textarea>
+    <label>上傳圖片（可選）</label>
+    <div class="img-upload-area" onclick="document.getElementById('editImg').click()">
+      <input type="file" id="editImg" accept="image/*" onchange="previewImg(this)" />
+      <div id="imgUploadText">📷 點擊上傳圖片</div>
+      <img id="imgPreview" class="img-preview" style="display:none;" />
+    </div>
+    <input type="hidden" id="editIndex" value="-1" />
+    <div class="btn-row">
+      <button class="btn-primary" onclick="saveEdit()">💾 儲存</button>
+      <button class="btn-danger" id="deleteBtn" onclick="deleteEdit()" style="display:none;">🗑️ 刪除</button>
+      <button class="btn-secondary" onclick="closeEditOverlay()">取消</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ============================
+// DATA - QA
+// ============================
+let customEntries = JSON.parse(localStorage.getItem('customEntries') || '[]');
+let marqueeData = JSON.parse(localStorage.getItem('marqueeData') || '[]');
+let isAdmin = false;
+
+const ADMIN_PASSWORD = '1959';
+
+const qaData = {
+  nantou: [
+    {q:'路邊看到有一隻狗或貓車禍受傷，該怎麼辦？', a:'確實記錄案件於案件通報單，由專線電話通知外勤救援人員前往救援。（緊急救援案件須立即處理）\n關聯：路邊有狗(貓)受傷，可以幫忙送醫嗎？/ 狗被捕獸夾夾到，可以幫幫他嗎？'},
+    {q:'有狗掉入水溝，該找誰救援？', a:'確實記錄案件於案件通報單，由專線電話通知外勤救援人員前往救援。（緊急救援案件須立即處理）\n關聯：貓在樹上好幾天不下來 / 狗在大排水溝好幾天了'},
+    {q:'突然有一隻野狗跑入家中，無法驅趕離開，該怎麼辦？', a:'1. 可請鄰居或親友以適當物品（如掃把、紙板等）協助驅離犬隻。\n2. 專線電話通知外勤救援人員前往驅離犬隻。\n注意：如民眾可以自行處理則無需派員，如無法處理仍請派員協助。'},
+    {q:'想認養犬貓應該到哪邊認養？', a:'可到本縣公立南投動物收容所認養，地址為南投市嶺興路36-1號，電話049-2225440。\n開放時間：週二至六上午9:00~11:30，下午13:30~16:00，週日及週一為休假日。'},
+    {q:'公立南投動物收容所開放時間為何？', a:'平日（週二至週六）：上午9時至11時30分、下午13時30分至16時。\n週六需事先連絡預約時間參觀，收容所電話049-2225440。'},
+    {q:'想到收容所認養犬貓有什麼限制及條件？', a:'認養人須年滿18歲，於開放時間內攜帶身分證件及印章到收容所辦理認領養手續。未滿18歲者以其法定代理人或法定監護人為飼主。'},
+    {q:'我發現有人棄養動物或虐待動物，我該怎麼辦？', a:'請撥打南投縣動保1959專線電話通報，並詳細說明動物受害情況及所在地點。'},
+    {q:'發現有人虐待寵物，可以向哪個機關舉報嗎？', a:'請撥打南投縣動保1959專線電話通報。動保人員接獲陳情後，將依動物保護法相關規定查處。'},
+    {q:'路邊發現貓咪，一動也不動，可能已死亡，要怎麼處理？', a:'路殺大體處理請聯繫南投各鄉鎮清潔隊，由清潔隊協助處理遺體。'},
+    {q:'飼主辦理寵物絕育要帶什麼去？', a:'請攜帶寵物登記證、身分證及相關費用，至縣內配合之動物醫院辦理絕育手術。'},
+  ],
+  nantouEpidem: [
+    {q:'一般民眾要如何預防禽流感？', a:'1.禽肉蛋類要充分煮熟才食用。\n2.要經常用肥皂洗手。\n3.不接觸、餵飼禽鳥。\n4.不購買來路不明禽鳥及產品。\n5.不自行宰殺禽鳥食用。\n6.不去養禽場及屠宰場。\n7.有感冒徵候，應立即戴口罩儘速就醫。'},
+    {q:'家裡如果有養寵物禽鳥，要注意什麼？', a:'應避免讓您的寵物禽鳥與野鳥接觸，清理其排泄物時宜戴口罩及膠質手套，清理完畢應用肥皂洗淨雙手；如寵物禽鳥死亡需以一般廢棄物標準處理，千萬不要任意棄置。'},
+    {q:'民眾去賞鳥或餵鴿子會感染到禽流感嗎？', a:'正常情形下不刻意接觸鳥類感染禽流感之風險極低，但仍應避免親密接觸禽鳥如餵食鴿子。若不慎碰觸或衣物沾到鳥糞，應立即用肥皂徹底清洗。賞鳥時建議採遠距離以望遠鏡，減少與禽鳥接觸機會。'},
+  ],
+  taoyuan: [
+    {q:'民眾發現不同種類之受傷動物（如狗、貓），應分別向哪一單位通報收容處理？', a:'如果街頭發現流浪犬貓受傷時：\n・上班時間：通報本處（03-3250126#500）或市民專線1999\n・下班時間：直撥市民專線1999\n本處將盡快派員前往救援，並為該動物檢傷分類，評估是否後送合約動物醫院住院醫療。\n\n注意：動物急難救助以救援受傷遊蕩犬貓為主，不能是民眾自行送往醫院，要通報救援。'},
+    {q:'上班時間如果於街頭發現動物受傷怎麼辦？動物後續處置為何？', a:'發現流浪動物(一般指犬貓)受傷時，可通報本處（03-3250126分機500~510）或市民專線1999，本處將盡快派員前往救援，並為該動物檢傷分類，評估是否後送合約動物醫院住院醫療。\n\n務必提供：通報人姓名、聯絡電話、受傷動物所在地詳細地址、動物別（狗/貓）、動物體型(大/中/小)、毛色或特徵、動物受傷狀況（尚可行走/無法行走）等資料，並辦理公告。'},
+    {q:'流浪動物(犬貓)於非上班時間受傷需緊急救護應如何處理？', a:'您可撥打1999市民諮詢服務熱線，話務人員將通報相關單位前往處理。\n\n為了能盡快搜尋到動物，請務必提供：\n・姓名\n・聯絡電話\n・受傷動物所在地詳細地址\n・動物別（狗/貓）\n・動物體型(大/中/小)\n・毛色或特徵\n・動物受傷狀況（尚可行走/無法行走）'},
+    {q:'家中心愛寵物往生，我要將牠屍體焚化，請問如何辦理？', a:'目前市民處理飼養寵物之遺體的建議方式：\n(一) 可交由各區公所清潔隊處理，無須繳交額外費用。\n(二) 本處提供委外集體焚化犬貓遺體服務，按重量計費，每公斤收費新臺幣90元，不足一公斤者以一公斤計算。\n(三) 寵物需個別火化者，可交付私人寵物殯葬業處理，北部共有數家業者提供相關服務。'},
+    {q:'路邊發現狗貓屍體，應如何處理？', a:'下班時間及假日發現犬貓遺體，可撥打桃園市動保1959專線，話務人員將通報相關單位處理。上班時間可直接通報本處（03-3250126）。'},
+  ],
+  changhua: [
+    {q:'民眾發現貓、狗受傷請求救護（上班時間及離線時段）？', a:'如民眾於路上遇到受傷之犬貓，可請民眾撥打1959動保通報專線，由專線人員指引民眾作後續處理。\n課別：動物保護課 / 承辦人：張議仁 / 電話：7620774#265'},
+    {q:'民眾反映於彰化市市區發現有狗受傷，惟民眾趕著上班，無法在現場陪同等待救護，該如何處理？', a:'如民眾於路上遇到受傷之犬貓，可請民眾撥打1959動保通報專線，由專線人員指引民眾作後續處理。\n課別：動物保護課 / 承辦人：張議仁 / 電話：7620774#265'},
+    {q:'民眾拾獲寵物（烏龜、鸚鵡），希請處理（上班時間及離線時段）？', a:'上班時間（08:00-12:00 / 13:00-17:00）：可送至本縣動物防疫所協尋飼主。\n離線時段：可先將動物放置適合大小紙箱（戳洞）安置或置物箱中，可適當給予飲水，再於上班時間送至本縣動物防疫所。\n課別：動物保護課 / 承辦人：林浩鋒 / 電話：7620774#261'},
+    {q:'民眾發現保育類野生動物受傷，請求緊急救護（上班時間及離線時段）？', a:'上班時間：先撥電話（049-2761331分機700,725）至南投野生動物急救站確認狀況後，將其送至該單位進行專業救護。亦可於上班時間送至本縣動物防疫所進行簡單救護，再後送至南投野生動物急救站。\n課別：動物保護課 / 承辦人：林浩鋒 / 電話：7620774#261'},
+    {q:'民眾反映我家附近有流浪犬、貓，影響民眾生活安全，怎麼辦？', a:'可請民眾撥打1959動保通報專線，本縣動物保護課業務人員將協助辦理遊蕩犬貓TNVR（捕捉絕育疫苗接種回置）等處置。\n課別：動物保護課 / 承辦人：張議仁 / 電話：7620774#265'},
+  ],
+  changhuaRabies: [
+    {q:'我家的狗、貓每年都要施打狂犬病嗎？未施打狂犬病疫苗，會被開罰嗎？', a:'若您的愛犬、貓已滿三個月齡以上或注射已逾一年仍未施打狂犬病疫苗，請攜帶愛犬、貓至縣轄內接受委託之動物醫院施打狂犬病疫苗，並於每年補強一次，注射完畢後請為您的寵物戴上注射證明牌，以降低狂犬病由野生動物傳至犬貓的風險。\n本所將不定期稽查取締，一經查獲未施打狂犬病疫苗者，將依動物傳染病防治條例處以新台幣30,000元以上150,000元以下罰鍰。'},
+    {q:'若遺失或損毀狂犬病預防注射證明牌，是否可補發？', a:'狂犬病預防注射證明牌每年於預防注射後均會核發該年度證明牌，故不進行補發作業。如有遺失或損毀，請備妥預防注射證明書備查即可。'},
+    {q:'本縣有狂犬病病例嗎？目前國內發生狀況？', a:'本縣目前並無狂犬病陽性病例；呼籲民眾應確實遵守「二不一要」：\n・不要棄養寵物\n・不要接觸及捕捉野生動物\n・要為家中犬貓每年施打狂犬病疫苗\n提升整體免疫覆蓋率，才能確保人畜安全。'},
+  ],
+  changhuaDisease: [
+    {q:'養禽業者應如何觀察家禽健康狀況是否異常？如有疫情如何通報？', a:'養禽場如有以下異常情況，請畜主主動通報地方動物防疫機關（04-7620774）：\n1. 連續兩天，每天化製率大於或等於登記飼養頭數之1%\n2. 單日化製率大於或等於登記飼養頭數之1.5%\n3. 禽場家禽飲水量、攝食量或產蛋率下降大於5%'},
+    {q:'感染非洲豬瘟的豬隻會發生什麼症狀？如何看出豬隻已被傳染？', a:'發病豬隻特徵：發高熱及皮膚呈現紫斑點，全身內臟出血，尤以淋巴結、腎臟和腸粘膜最明顯。\n病程分甚急、急、亞急與慢性等四種：\n・甚急性：發燒、突然死亡，無其他症狀\n・急性：高燒、食慾廢絕、呼吸快、精神不良、四肢耳皮膚發紺、嘔吐、下痢，約7天\n・亞急性：發燒，3-4星期\n・慢性：病狀不明顯，持續數月'},
+    {q:'民眾該如何防範非洲豬瘟入侵與配合政府政策？', a:'呼籲旅客勿攜帶家畜肉類產品、含肉製品之伴手禮入境，以免受罰，共同維護我國農畜產業生產安全。民眾如持有來源不明肉品，應送交行政院農業委員會動植物防疫檢疫局各分局處理。'},
+  ],
+  changhuaStray: [
+    {q:'彰化縣流浪狗中途之家電話、住址及開放時間為何？', a:'電話：04-8590638\n地址：芬園鄉大彰路一段875巷巷底（衛星定位找得到）\n開放時間：週二至週六，上午10:00~12:00、下午14:00~16:00（週五消毒日休息）'},
+    {q:'我撿到流浪狗可以送交哪個單位收容？', a:'請民眾先協助送往鄰近動物醫院掃描有無晶片，如果無晶片，再請民眾協助於臉書PO文協尋主人，亦可送交本縣流浪狗中途之家收容。\n\n注意：由於彰化縣動物收容所量能已不足，如有接到拾獲流浪貓狗想要送往的案件，請先提供動防所的電話04-7620774，讓民眾於上班時間先撥打電話詢問是否還有空間可收容，請勿直接請民眾送過去。'},
+    {q:'我的狗很兇會咬人，但有幼兒無法繼續飼養怎麼辦？', a:'建議可先幫愛犬找尋合適的飼主飼養。如果無法找尋合適之飼主，可自己將家中犬隻送至本縣流浪狗中途之家辦理不擬飼養。\n費用：有寵物登記且絕育2000元，無其中一項者收費4000元\n電話：04-8590638\n地址：彰化縣芬園鄉大彰路一段875巷（直走到底）'},
+  ]
+};
+
+// All searchable content
+const searchIndex = [];
+function buildSearchIndex() {
+  // 南投 QA
+  qaData.nantou.forEach((item, i) => {
+    searchIndex.push({city:'南投', cityKey:'nantou', section:'常見問題', q:item.q, a:item.a, type:'qa'});
+  });
+  qaData.nantouEpidem.forEach((item, i) => {
+    searchIndex.push({city:'南投', cityKey:'nantou', section:'動物防疫檢疫', q:item.q, a:item.a, type:'qa'});
+  });
+  qaData.taoyuan.forEach((item, i) => {
+    searchIndex.push({city:'桃園', cityKey:'taoyuan', section:'常見問題', q:item.q, a:item.a, type:'qa'});
+  });
+  qaData.changhua.forEach((item, i) => {
+    searchIndex.push({city:'彰化', cityKey:'changhua', section:'常見問題QA', q:item.q, a:item.a, type:'qa'});
+  });
+  qaData.changhuaRabies.forEach((item, i) => {
+    searchIndex.push({city:'彰化', cityKey:'changhua', section:'狂犬病', q:item.q, a:item.a, type:'qa'});
+  });
+  qaData.changhuaDisease.forEach((item, i) => {
+    searchIndex.push({city:'彰化', cityKey:'changhua', section:'禽流感/非洲豬瘟', q:item.q, a:item.a, type:'qa'});
+  });
+  qaData.changhuaStray.forEach((item, i) => {
+    searchIndex.push({city:'彰化', cityKey:'changhua', section:'流浪犬案件', q:item.q, a:item.a, type:'qa'});
+  });
+  // Custom entries
+  customEntries.forEach((item, i) => {
+    const cityNames = {nantou:'南投', taoyuan:'桃園', chiayi:'嘉義', changhua:'彰化'};
+    searchIndex.push({city:cityNames[item.city]||item.city, cityKey:item.city, section:item.section, q:item.question, a:item.answer, type:'custom', idx:i});
+  });
+}
+
+// ============================
+// RENDER QA LISTS
+// ============================
+function renderQA(containerId, items, cityKey) {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+  container.innerHTML = '';
+  items.forEach((item, i) => {
+    const card = document.createElement('div');
+    card.className = 'qa-card';
+    const editBtn = isAdmin ? `<button class="qa-edit-btn" onclick="event.stopPropagation();openEditQA('${cityKey}','${containerId}',${i})">✏️ 編輯</button>` : '';
+    card.innerHTML = `
+      <div class="qa-question" onclick="toggleQA(this)">
+        <span class="qa-q-icon">Q</span>
+        <span style="flex:1">${item.q}</span>
+        ${editBtn}
+      </div>
+      <div class="qa-answer">
+        <div class="qa-a-label">✅ 答覆</div>
+        <div style="white-space:pre-wrap">${item.a}</div>
+      </div>
+    `;
+    container.appendChild(card);
+  });
+}
+
+function renderAllQA() {
+  renderQA('qa-nantou', qaData.nantou, 'nantou');
+  renderQA('qa-nantou-epidem', qaData.nantouEpidem, 'nantou');
+  renderQA('qa-taoyuan', qaData.taoyuan, 'taoyuan');
+  renderQA('qa-changhua', qaData.changhua, 'changhua');
+  renderQA('qa-changhua-rabies', qaData.changhuaRabies, 'changhua');
+  renderQA('qa-changhua-disease', qaData.changhuaDisease, 'changhua');
+  renderQA('qa-changhua-stray', qaData.changhuaStray, 'changhua');
+
+  // Nantou service info
+  const nantouSvc = document.getElementById('nantou-service-info');
+  if (nantouSvc) {
+    nantouSvc.innerHTML = `
+      <div class="info-block">南投縣1959動物保護專線服務說明
+
+📞 專線受理時間：全年無休24小時受理
+
+【受理事項】
+1. 犬貓急難救助、路殺犬貓通報
+2. 動保法相關諮詢、動保案件通報
+3. 動物防檢疫問題諮詢、本所部分業務諮詢（家犬貓狂犬病注射、絕育補助、本縣獸醫院資訊）
+4. 寵物登記變更轉移相關問題
+5. 提供野生動物類之案件相關單位聯絡資訊
+6. 收容所犬貓認養相關諮詢
+7. 犬貓疏縱及棄養案件通報
+
+🌐 南投動保業務範圍：
+https://adcc.nantou.gov.tw/1482/WebMap/ListView/2068/zh-Hant-TW</div>`;
+  }
+
+  // Nantou toad
+  const toad = document.getElementById('nantou-toad-info');
+  if (toad) {
+    toad.innerHTML = `
+      <div class="info-block">🐸 海蟾蜍（學名：Rhinella marina）
+是一種原產於中南美洲的大型蟾蜍，因人為引入已成為全球最具侵略性的外來種之一，被列為世界百大外來入侵種。
+2021年首次在南投草屯被發現，體長約10至15公分（野外紀錄最大可達21.5公分），是台灣原生蟾蜍的兩倍大。
+繁殖力驚人，一次可產下8,000-35,000顆卵，對台灣的生物多樣性構成嚴重威脅。
+
+【如何辨識】
+辨識關鍵特徵：體型巨大（成體可達10-15公分）、背部呈棕色至灰褐色且有疣狀突起、頭部兩側有明顯大型腮腺（毒腺）稱為耳後腺、鼓膜明顯可見。
+若發現疑似個體，請保持安全距離，並立即通報。
+
+【棲息環境與活動習性】
+海蟾蜍適應力極強，能在多種環境中生存，包括森林、草地、農田、市區等。偏好潮濕環境，常在開闊水域附近繁殖，夜間活動頻繁，常聚集在燈光下獵食昆蟲。</div>`;
+  }
+
+  // Changhua wildlife
+  const wildlife = document.getElementById('changhua-wildlife-info');
+  if (wildlife) {
+    wildlife.innerHTML = `<div class="info-block">野生動物救援流程：
+1. 接獲民眾、消防局、警察局通報有受傷之野生動物
+2. 請民眾用毛巾、手套或衣服將受傷動物包覆放置於紙箱（需戳洞）內安置
+3. 暫勿餵食、餵水
+4. 先撥電話（049-2761331分機700,725）至南投野生動物急救站確認狀況
+5. 將動物後送至專業救護站
+
+動物逸出處理（非上班日）：
+・經濟動物（豬、牛、羊、鹿、山豬、鴕鳥）→ 縣政府畜產科 / 許天耀科長 0953-199823
+・彰化縣動物防疫所電話：04-7620774（電話轉接至本所輪值人員）</div>`;
+  }
+
+  // Custom entries
+  const cityContainers = {nantou:'qa-nantou', taoyuan:'qa-taoyuan', chiayi:'', changhua:'qa-changhua'};
+  customEntries.forEach((item, i) => {
+    // Add to search index only, display handled separately
+  });
+}
+
+// ============================
+// TOGGLE / SWITCH
+// ============================
+let currentCity = '';
+
+function switchCity(city) {
+  // Hide all panels
+  document.querySelectorAll('.city-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.city-btn').forEach(b => {
+    b.classList.remove('active-nantou','active-taoyuan','active-chiayi','active-changhua');
+  });
+  document.querySelectorAll('.sidebar-topics').forEach(t => t.classList.remove('open'));
+
+  // Show selected
+  document.getElementById('panel-' + city).classList.add('active');
+  document.getElementById('btn-' + city).classList.add('active-' + city);
+  document.getElementById('topics-' + city).classList.add('open');
+  currentCity = city;
+
+  // Update marquee
+  updateMarqueeForCity(city);
+}
+
+function toggleSection(header) {
+  const body = header.nextElementSibling;
+  const toggle = header.querySelector('.section-toggle');
+  body.classList.toggle('open');
+  toggle.classList.toggle('open');
+}
+
+function toggleQA(questionEl) {
+  const answer = questionEl.nextElementSibling;
+  answer.classList.toggle('open');
+}
+
+function scrollToSection(city, keyword) {
+  switchCity(city);
+  setTimeout(() => {
+    const sections = document.querySelectorAll(`#panel-${city} .section`);
+    for (const s of sections) {
+      if (s.id.includes(keyword)) {
+        s.scrollIntoView({behavior:'smooth', block:'start'});
+        const body = s.querySelector('.section-body');
+        const toggle = s.querySelector('.section-toggle');
+        if (body && !body.classList.contains('open')) {
+          body.classList.add('open');
+          toggle && toggle.classList.add('open');
+        }
+        break;
+      }
+    }
+  }, 100);
+}
+
+// ============================
+// MARQUEE
+// ============================
+function updateMarqueeForCity(city) {
+  const cityTexts = marqueeData.filter(m => m.city === 'all' || m.city === city);
+  let text = '歡迎使用動物保護專線知識庫｜請確認事發地點縣市後再查詢相關資訊｜如有緊急救援需求請撥打1959動物保護專線';
+  if (cityTexts.length > 0) {
+    text = cityTexts.map(m => m.text).join('　｜　');
+  }
+  document.getElementById('marqueeText').textContent = text;
+}
+
+function addMarquee() {
+  const city = document.getElementById('marqueeCity').value;
+  const text = document.getElementById('marqueeInput').value.trim();
+  if (!text) return;
+  marqueeData.push({city, text});
+  localStorage.setItem('marqueeData', JSON.stringify(marqueeData));
+  document.getElementById('marqueeInput').value = '';
+  renderMarqueeList();
+  updateMarqueeForCity(currentCity || 'nantou');
+}
+
+function renderMarqueeList() {
+  const list = document.getElementById('marqueeList');
+  list.innerHTML = '';
+  const cityNames = {all:'全域', nantou:'南投', taoyuan:'桃園', chiayi:'嘉義', changhua:'彰化'};
+  marqueeData.forEach((m, i) => {
+    const li = document.createElement('li');
+    li.innerHTML = `<span style="flex:1">[${cityNames[m.city]||m.city}] ${m.text}</span>
+      <button class="marquee-del-btn" onclick="delMarquee(${i})">刪除</button>`;
+    list.appendChild(li);
+  });
+}
+
+function delMarquee(i) {
+  marqueeData.splice(i, 1);
+  localStorage.setItem('marqueeData', JSON.stringify(marqueeData));
+  renderMarqueeList();
+}
+
+// ============================
+// SEARCH
+// ============================
+document.getElementById('globalSearch').addEventListener('keydown', e => {
+  if (e.key === 'Enter') doSearch();
+});
+
+function doSearch() {
+  const keyword = document.getElementById('globalSearch').value.trim();
+  if (!keyword) return;
+  
+  const results = searchIndex.filter(item => 
+    item.q.includes(keyword) || item.a.includes(keyword) || item.section.includes(keyword)
+  );
+
+  const overlay = document.getElementById('searchOverlay');
+  const list = document.getElementById('searchResultsList');
+  const title = document.getElementById('searchResultsTitle');
+
+  title.textContent = `搜尋「${keyword}」— 共 ${results.length} 筆結果`;
+
+  if (results.length === 0) {
+    list.innerHTML = '<div class="no-results">😔 未找到相關資料，請嘗試其他關鍵字</div>';
+  } else {
+    list.innerHTML = results.map((r, i) => {
+      const hl = (text) => text.replace(new RegExp(keyword, 'g'), `<mark>${keyword}</mark>`);
+      const cityClass = {南投:'city-tag-nantou', 桃園:'city-tag-taoyuan', 嘉義:'city-tag-chiayi', 彰化:'city-tag-changhua'}[r.city] || 'city-tag-nantou';
+      return `<div class="search-result-item" onclick="gotoResult('${r.cityKey}')">
+        <span class="search-result-city ${cityClass}">${r.city}</span>
+        <div class="search-result-section">${r.section}</div>
+        <div class="search-result-text">${hl(r.q)}</div>
+        <div class="search-result-preview">${hl(r.a.substring(0, 120))}${r.a.length > 120 ? '...' : ''}</div>
+      </div>`;
+    }).join('');
+  }
+  overlay.classList.add('open');
+}
+
+function gotoResult(cityKey) {
+  closeSearch();
+  switchCity(cityKey);
+}
+
+function closeSearch() {
+  document.getElementById('searchOverlay').classList.remove('open');
+}
+
+document.getElementById('searchOverlay').addEventListener('click', function(e) {
+  if (e.target === this) closeSearch();
+});
+
+// ============================
+// ADMIN
+// ============================
+function openAdmin() {
+  document.getElementById('adminOverlay').classList.add('open');
+  if (isAdmin) {
+    document.getElementById('adminLoginSection').style.display = 'none';
+    document.getElementById('adminMainSection').style.display = 'block';
+    renderMarqueeList();
+  }
+}
+
+function closeAdmin() {
+  document.getElementById('adminOverlay').classList.remove('open');
+}
+
+function checkAdmin() {
+  const pw = document.getElementById('adminPassword').value;
+  if (pw === ADMIN_PASSWORD) {
+    isAdmin = true;
+    document.getElementById('adminLoginSection').style.display = 'none';
+    document.getElementById('adminMainSection').style.display = 'block';
+    document.getElementById('adminStatus').textContent = '';
+    document.body.classList.add('admin-mode');
+    document.getElementById('adminBadge').style.display = 'inline-block';
+    document.getElementById('adminBox').parentElement.classList.add('admin-mode-active');
+    renderMarqueeList();
+    renderAllQA();
+  } else {
+    document.getElementById('adminStatus').textContent = '❌ 密碼錯誤，請再試一次';
+    document.getElementById('adminPassword').value = '';
+  }
+}
+
+function logoutAdmin() {
+  isAdmin = false;
+  document.body.classList.remove('admin-mode');
+  document.getElementById('adminBadge').style.display = 'none';
+  document.getElementById('adminLoginSection').style.display = 'block';
+  document.getElementById('adminMainSection').style.display = 'none';
+  document.getElementById('adminPassword').value = '';
+  closeAdmin();
+  renderAllQA();
+}
+
+document.getElementById('adminOverlay').addEventListener('click', function(e) {
+  if (e.target === this) closeAdmin();
+});
+
+// ============================
+// EDIT
+// ============================
+function openAddEdit(mode, city, section, question, answer, idx) {
+  const overlay = document.getElementById('editOverlay');
+  document.getElementById('editTitle').textContent = mode === 'add' ? '➕ 新增條目' : '✏️ 編輯條目';
+  document.getElementById('editCity').value = city || currentCity || 'nantou';
+  document.getElementById('editSection').value = section || '';
+  document.getElementById('editQuestion').value = question || '';
+  document.getElementById('editAnswer').value = answer || '';
+  document.getElementById('editIndex').value = idx !== undefined ? idx : -1;
+  document.getElementById('deleteBtn').style.display = mode === 'edit' ? 'block' : 'none';
+  document.getElementById('imgPreview').style.display = 'none';
+  document.getElementById('imgUploadText').textContent = '📷 點擊上傳圖片';
+  overlay.classList.add('open');
+}
+
+function openEditQA(cityKey, containerId, idx) {
+  openAddEdit('edit', cityKey, '常見問題', '', '', idx);
+}
+
+function closeEditOverlay() {
+  document.getElementById('editOverlay').classList.remove('open');
+}
+
+function saveEdit() {
+  const city = document.getElementById('editCity').value;
+  const section = document.getElementById('editSection').value;
+  const question = document.getElementById('editQuestion').value.trim();
+  const answer = document.getElementById('editAnswer').value.trim();
+  const idx = parseInt(document.getElementById('editIndex').value);
+  
+  if (!question || !answer) {
+    alert('請填寫問題和答案！');
+    return;
+  }
+
+  if (idx === -1) {
+    customEntries.push({city, section, question, answer});
+  } else {
+    customEntries[idx] = {city, section, question, answer};
+  }
+  localStorage.setItem('customEntries', JSON.stringify(customEntries));
+  
+  // Re-build search index
+  searchIndex.length = 0;
+  buildSearchIndex();
+  
+  closeEditOverlay();
+  renderAllQA();
+  alert('✅ 已儲存！');
+}
+
+function deleteEdit() {
+  const idx = parseInt(document.getElementById('editIndex').value);
+  if (idx >= 0 && confirm('確定要刪除這筆資料嗎？')) {
+    customEntries.splice(idx, 1);
+    localStorage.setItem('customEntries', JSON.stringify(customEntries));
+    searchIndex.length = 0;
+    buildSearchIndex();
+    closeEditOverlay();
+    renderAllQA();
+  }
+}
+
+function previewImg(input) {
+  if (input.files && input.files[0]) {
+    const reader = new FileReader();
+    reader.onload = e => {
+      document.getElementById('imgPreview').src = e.target.result;
+      document.getElementById('imgPreview').style.display = 'block';
+      document.getElementById('imgUploadText').textContent = '✅ 已上傳圖片';
+    };
+    reader.readAsDataURL(input.files[0]);
+  }
+}
+
+document.getElementById('editOverlay').addEventListener('click', function(e) {
+  if (e.target === this) closeEditOverlay();
+});
+
+// ============================
+// INIT
+// ============================
+renderAllQA();
+buildSearchIndex();
+switchCity('nantou');
+</script>
+</body>
+</html>
