@@ -278,10 +278,25 @@ function pages(){var p=DATA&&DATA[CC]&&DATA[CC].pages;return(p&&p.length)?p:DEF_
 // ── Data ──
 function loadData(){
   try{
-    DATA=JSON.parse(JSON.stringify(DEFAULT_DATA));
+    // Avoid deep-cloning huge DEFAULT_DATA (contains base64 images -> very slow)
+    // Instead build DATA by shallow-referencing city data
+    DATA={};
+    ['taoyuan','changhua','chiayi','nantou'].forEach(function(city){
+      var def=DEFAULT_DATA[city];
+      DATA[city]={
+        qa: def.qa ? def.qa.slice() : [],
+        hotlines: def.hotlines ? def.hotlines.slice() : [],
+        vets: def.vets ? def.vets.slice() : [],
+        disease: def.disease ? def.disease.slice() : [],
+        marquees: def.marquees ? def.marquees.slice() : [],
+        pages: def.pages ? def.pages.slice() : [],
+        info_pages: def.info_pages ? def.info_pages : {},
+        compare: def.compare ? def.compare.slice() : []
+      };
+    });
   }catch(e){
-    console.error('DEFAULT_DATA parse failed:',e);
-    document.getElementById('mainContent').innerHTML='<div class="empty"><div class="empty-ico">❌</div>資料載入失敗，請重新整理頁面</div>';
+    console.error('loadData init failed:',e);
+    document.getElementById('mainContent').innerHTML='<div class="empty"><div class="empty-ico">❌</div>資料載入失敗：'+e.message+'</div>';
     return;
   }
   try{
